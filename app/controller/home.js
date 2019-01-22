@@ -64,7 +64,7 @@ class HomeController extends Controller {
 
   async createDevice() {
     const deviceData = this.ctx.request.body
-    return await this.ctx.model.Device.create(deviceData)
+    this.ctx.body = await this.ctx.model.Device.create(deviceData)
   }
 
   async updateDevice() {
@@ -117,12 +117,27 @@ class HomeController extends Controller {
     if (!device || device.enable === 1) {
       this.ctx.throw(401, '', '连接失败')
     }
-    device.status = 1
-    await device.update()
 
     this.ctx.body = {
       clientId,
     }
+  }
+
+  async deviceConnectStatus() {
+    const { action, client_id } = this.ctx.request.body
+
+    let status = -1
+    if (action === 'client_connected') {
+      status = 1
+    } else if (action === 'client_disconnected') {
+      status = 0
+    }
+    if (status === -1) {
+      this.ctx.body = {}
+      return
+    }
+    this.ctx.body = await this.ctx.model.Device
+      .updateOne({ clientId: client_id }, { $set: { status } })
   }
 }
 

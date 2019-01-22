@@ -8,6 +8,8 @@ egg.js 开发基于 MQTT 协议的 iot 应用，借助 EMQ X MQTT Broker 可进�
 
 [EMQ X 下载](http://emqtt.com/downloads) 建议下载 3.0 版本。
 
+#### 连接认证配置
+
 修改配置文件:
 
 ```
@@ -30,6 +32,31 @@ auth.http.auth_req.params = clientId=%c,username=%u,password=%P
 注意：认证 API 响应 httpStatus 20X 为认证成功，40X 为认证失败。
 
 
+#### 上下线状态配置
+
+
+https://github.com/emqx/emqx-web-hook
+
+修改配置文件:
+
+```
+## etc/plugins/emqx_web_hook.conf
+vi etc/plugins/emqx_web_hook.conf
+```
+
+```
+## 回调地址
+web.hook.api.url = http://127.0.0.1:7001/api/connect/status
+
+## 保留两项，其他的注释掉
+
+web.hook.rule.client.connected.1     = {"action": "on_client_connected"}
+web.hook.rule.client.disconnected.1  = {"action": "on_client_disconnected"}
+
+```
+
+
+
 启动 EMQ X：
 ```
 ./bin/emqx start
@@ -38,9 +65,11 @@ auth.http.auth_req.params = clientId=%c,username=%u,password=%P
 启动 HTTP 认证插件：
 ```
 ./bin/emqx_ctl plugins load emqx_auth_http
+./bin/emqx_ctl plugins load emqx_web_hook
 ```
 
 简单管理：
+
 访问 http://127.0.0.1:18083 EMQ X 管理控制台。
 
 
