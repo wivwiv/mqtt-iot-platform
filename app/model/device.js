@@ -8,7 +8,7 @@ module.exports = app => {
     name: { type: String, comment: '设备名称', required: true },
 
     // MQTT 认证信息
-    clientId: { type: String, default: app.uuid },
+    clientId: { type: String, default: app.uuid, unique: true },
     username: { type: String, default: app.uuid },
     password: { type: String, default: app.uuid },
 
