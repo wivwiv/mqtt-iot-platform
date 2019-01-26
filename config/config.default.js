@@ -1,4 +1,5 @@
 'use strict'
+const path = require('path')
 
 module.exports = appInfo => {
   const config = exports = {}
@@ -29,6 +30,12 @@ module.exports = appInfo => {
       username: 'super_user_client',
       password: '_this_is_secrect_',
     },
+  }
+
+  config.static = {
+    prefix: '',
+    dir: path.join(appInfo.baseDir, './public'),
+    dynamic: true,
   }
 
   return config;

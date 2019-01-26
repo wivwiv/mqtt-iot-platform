@@ -5,8 +5,12 @@
 exports.mongoose = {
   enable: true,
   package: 'egg-mongoose',
-};
+}
 
 exports.security = {
   enable: false,
-};
+}
+
+exports.static = {
+  enable: true,
+}

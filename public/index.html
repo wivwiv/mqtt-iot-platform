@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>egg-iot-with-mqtt</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mqtt@2.18.8/dist/mqtt.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram@1.3.0/dist/milligram.min.css">
+
+  <style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  #app .pull-left {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    max-height: 600px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  #app .pull-right {
+    padding: 20px;
+    width: 50%;
+    float: right;
+    max-height: 600px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  #app .devices-list {
+  }
+
+  #app .devices-list .device-item {
+    list-style-type: none;
+    display: block;
+    margin-bottom: 12px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 2px;
+    cursor: pointer;
+  }
+
+  #app .devices-list .device-item.active,
+  #app .devices-list .device-item:hover,
+  #app .devices-list .device-item.selected {
+    border-color: #9b4dca;
+  }
+
+  #app .devices-list .device-item.selected {
+  }
+  #app .api-info {
+    padding: 20px;
+    margin: 20px auto;
+    clear: both;
+  }
+  </style>
+
+</head>
+
+<body>
+<script>
+// axios default
+axios.defaults.baseURL = '/api'
+axios.defaults.headers['Conent-Type'] = 'application/json'
+axios.defaults.headers.Accept = 'text/json'
+
+function log(str) {
+  vm.log = `${str}\n` + vm.log
+}
+</script>
+<div id="app">
+  <div class="pull-left">
+    <div class="connect-info">
+        <span>
+          连接信息
+          <div style="float: right; cursor: pointer;" @click="connect">
+            {{ clientStatus }}
+          </div>
+        </span>
+      <input v-model="url" id="url" type="text" placeholder="ws://127.0.0.1:8083/mqtt">
+      <div class="device-info">
+        <span>名称: {{ device.name }}</span>
+        <span style="float: right">状态: {{ device.status === 1 ? '在线' : '离线' }}</span>
+      </div>
+      <p></p>
+      <div class="connect-inf0">
+        <input v-model="topic" type="text" placeholder="Topic">
+        <button @click="subscribe">订阅</button>
+      </div>
+      <div class="connect-inf">
+        <input v-model="pubTopic" type="text" placeholder="发布主题">
+        <input v-model="payload" type="text" placeholder="Payload">
+        <button @click="pub">发布</button>
+      </div>
+    </div>
+
+    <div class="devices-list">
+        <span>
+          选取设备
+          <div style="cursor: pointer;float: right;" @click="loadDevice">刷新</div>
+        </span>
+      <ul>
+        <li
+          v-for="(item, index) in devices"
+          class="device-item"
+          :class="{ active: item.status === 1, selected: item._id === device._id }"
+          :key="index"
+          @click="handleSelect(item)">
+          <div class="device-name">
+            {{ item.name }}
+            <span v-show="item.status === 1" style="float: right; color: #9b4dca; font-size: 12px">
+                在线
+              </span>
+          </div>
+          <div class="device-raw-data">
+            {{ item.raw }}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="pull-right">
+    <button @click="log = ''">清空</button>
+    <pre>{{ log }}</pre>
+  </div>
+
+  <div class="api-info">
+    <p>API 列表</p>
+    <pre v-html="apiList"></pre>
+  </div>
+</div>
+
+<script>
+const vm = new Vue({
+  el: '#app',
+  data() {
+    return {
+      url: 'ws://127.0.0.1:8083/mqtt',
+      device: {},
+      devices: [],
+      topic: '/common',
+      pubTopic: '/common',
+      payload: '{ "cmd": "reboot" }',
+      apiList: '',
+      log: '',
+      client: {},
+    }
+  },
+  methods: {
+    connect() {
+      const device = this.device
+      if (!device.clientId) {
+        alert('请选择设备')
+        return
+      }
+      const IS_CURRENT_DEIVE = this.client.options
+          && this.client.options.clientId === device.clientId
+      if (device.status === 1 && !IS_CURRENT_DEIVE) {
+        alert('该设备已经在线')
+        return
+      }
+      if (IS_CURRENT_DEIVE && this.client) {
+        this.client.end(() => {
+          this.client._device.status = 0
+          log(this.client._device.name + ' 断开')
+          this.client = {}
+        })
+        return
+      }
+      const { clientId, username, password } = device
+      const option = { clientId, username, password }
+      this.client = mqtt.connect(this.url, option)
+      this.client.on('error', (error) => {
+        log(device.name + ' 连接错误 ' + error.message)
+      })
+      this.client.on('connect', () => {
+        device.status = 1
+        this.client.subscribe(this.topic, () => {
+          log(`${device.name} 订阅 ${this.topic}`)
+        })
+        this.client._device = device
+        log(device.name + ' 连接成功')
+      })
+      this.client.on('message', (topic, message) => {
+        console.log(message.toString())
+        log('\n\n' + topic +':' + message.toString() + '\n')
+      })
+    },
+    subscribe() {
+      if (!this.client.connected) {
+        alert('设备未启动')
+        return
+      }
+      this.client.subscribe(this.topic, () => {
+        log(`${this.device.name} 成功订阅 ${this.topic}`)
+      })
+    },
+    pub() {
+      if (!this.client.connected) {
+        alert('设备未启动')
+        return
+      }
+      this.client.publish(this.pubTopic, this.payload, () => {
+        log(`${this.device.name} 发布 ${this.payload}`)
+      })
+    },
+    async loadDevice() {
+      const {
+        data,
+      } = await axios.get('/devices', {
+        params: {
+          limit: 1000,
+        },
+      })
+      this.devices = data.items
+    },
+
+    handleSelect(device) {
+      this.device = device
+    },
+
+    loadApi() {
+      axios.get('/').then((response) => {
+        const api = response.data
+        this.apiList = JSON.stringify(api, null, 2)
+      })
+    }
+  },
+  created() {
+    this.loadDevice()
+    this.loadApi()
+  },
+  computed: {
+    clientStatus() {
+      let statusLabel = '连接'
+      if (this.client.connected) {
+        statusLabel = '断开'
+      } else if (this.client.reconnecting) {
+        statusLabel = '连接中'
+      }
+      return statusLabel
+    },
+  },
+})
+</script>
+</body>
+
+</html>
