@@ -8,7 +8,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1548076967409_9292'
 
   // add your config here
-  config.middleware = [ 'handleError', 'koaQueries' ]
+  config.middleware = ['handleError', 'koaQueries']
 
   config.handleError = {
     match: '/api',
@@ -32,11 +32,17 @@ module.exports = appInfo => {
     },
   }
 
+  config.emqx = {
+    mgmtBaseUrl: 'http://127.0.0.1:8080/v3',
+    appId: 'egg_iot_with_mqtt',
+    appSecret: 'Mjg1OTEzMzAyMTI2MzA0NTUzMTkwMjcyMjIzMDg5Nzg2ODI',
+  }
+
   config.static = {
     prefix: '',
     dir: path.join(appInfo.baseDir, './public'),
     dynamic: true,
   }
 
-  return config;
+  return config
 }

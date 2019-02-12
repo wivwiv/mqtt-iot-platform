@@ -59,6 +59,7 @@
 
   #app .devices-list .device-item.selected {
   }
+
   #app .api-info {
     padding: 20px;
     margin: 20px auto;
@@ -194,7 +195,7 @@ const vm = new Vue({
       })
       this.client.on('message', (topic, message) => {
         console.log(message.toString())
-        log('\n\n' + topic +':' + message.toString() + '\n')
+        log('\n\n' + topic + ':' + message.toString() + '\n')
       })
     },
     subscribe() {
@@ -235,7 +236,7 @@ const vm = new Vue({
         const api = response.data
         this.apiList = JSON.stringify(api, null, 2)
       })
-    }
+    },
   },
   created() {
     this.loadDevice()

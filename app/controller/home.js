@@ -3,6 +3,10 @@
 const Controller = require('egg').Controller
 
 class HomeController extends Controller {
+  /**
+   * 查看消息列表
+   * @returns {Promise<void>}
+   */
   async listPayload() {
     const { query, filter, sort } = this.ctx.state
 
@@ -23,6 +27,10 @@ class HomeController extends Controller {
     }
   }
 
+  /**
+   * 查看消息详情
+   * @returns {Promise<void>}
+   */
   async showPayload() {
     const { id } = this.ctx.params
     const payload = await this.ctx.model.Payload.findById(id)
@@ -32,6 +40,10 @@ class HomeController extends Controller {
     this.ctx.body = payload
   }
 
+  /**
+   * 删除消息
+   * @returns {Promise<void>}
+   */
   async deletePayload() {
     const { id } = this.ctx.params
     const payload = await this.ctx.model.Payload.findByIdAndRemove(id, { select: ['_id'] })
@@ -41,6 +53,10 @@ class HomeController extends Controller {
     this.ctx.body = payload
   }
 
+  /**
+   * 获取设备列表
+   * @returns {Promise<void>}
+   */
   async listDevice() {
     const { query, filter, sort } = this.ctx.state
 
@@ -61,11 +77,19 @@ class HomeController extends Controller {
     }
   }
 
+  /**
+   * 创建设备
+   * @returns {Promise<void>}
+   */
   async createDevice() {
     const deviceData = this.ctx.request.body
     this.ctx.body = await this.ctx.model.Device.create(deviceData)
   }
 
+  /**
+   * 更改设备
+   * @returns {Promise<void>}
+   */
   async updateDevice() {
     const { status, enable, raw = {} } = this.ctx.request.body
     const { id } = this.ctx.params
@@ -80,6 +104,10 @@ class HomeController extends Controller {
     this.ctx.body = device
   }
 
+  /**
+   * 获取设备详情
+   * @returns {Promise<void>}
+   */
   async showDevice() {
     const { id } = this.ctx.params
     const payload = await this.ctx.model.Device.findById(id)
@@ -89,6 +117,10 @@ class HomeController extends Controller {
     this.ctx.body = payload
   }
 
+  /**
+   * 删除设备
+   * @returns {Promise<void>}
+   */
   async deleteDevice() {
     const { id } = this.ctx.params
     const payload = await this.ctx.model.Device.findByIdAndRemove(id, { select: ['_id'] })
@@ -98,16 +130,40 @@ class HomeController extends Controller {
     this.ctx.body = payload
   }
 
+  async publishToDevice() {
+    const { id } = this.ctx.params
+
+    const device = await this.ctx.model.Device.findById(id)
+    if (!device) {
+      this.ctx.throw(404, '', '设备不存在')
+    }
+    if (device.status === 0) {
+      this.ctx.throw(400, '', '设备不在线')
+    }
+
+    const publishTopic = `$client/${device.clientId}`
+    const payload = this.ctx.request.body
+
+    this.ctx.body = await this.service.client.messagePublish(publishTopic, payload)
+  }
+
+  /**
+   * 获取 API
+   * @returns {Promise<void>}
+   */
   async showApi() {
     const { ctx } = this
-    const api = this.app.router.stack.map($ => ({
+    ctx.body = this.app.router.stack.map($ => ({
       path: $.path,
       name: $.name,
       methods: $.methods,
     }))
-    ctx.body = api
   }
 
+  /**
+   * EMQ X 连接认证
+   * @returns {Promise<void>}
+   */
   async deviceConnectAuth() {
     const { clientId, username, password } = this.ctx.request.body
     // 本地
@@ -130,6 +186,10 @@ class HomeController extends Controller {
     }
   }
 
+  /**
+   * EMQ X 设备状态
+   * @returns {Promise<void>}
+   */
   async deviceConnectStatus() {
     const { action, client_id } = this.ctx.request.body
 
@@ -146,6 +206,7 @@ class HomeController extends Controller {
     this.ctx.body = await this.ctx.model.Device
                               .updateOne({ clientId: client_id }, { $set: { status } })
   }
+
 }
 
 module.exports = HomeController
