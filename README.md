@@ -177,6 +177,40 @@ JavaScript MQTT 客户端推荐 [MQTT.js](https://www.npmjs.com/package/mqtt)，
 系统运行后多个窗口同时执行 `node AutoRun.js` 后可以查看通信效果。
 
 
+快速接入代码：
+
+```js
+const mqtt = require('mqtt')
+
+const clientId = 'xxx'
+const client = mqtt.connect('mqtt://127.0.0.1:1883', {
+  clientId,
+  username: 'xxx',
+  password: 'xxx',
+})
+
+client.on('connect', () => {
+    console.log('设备已连接')
+    // { topic1: qos, topic2: qos }
+    client.subscribe({ 'room/+/cmd': 1, 'user/#': 0, '#': 0 }, () => {
+      console.log('订阅成功')
+
+      setInterval(() => {
+        client.publish(`room/${clientId}/cmd`, `${clientId} 的 cmd 消息`)
+
+        client.publish(`user/${clientId}`, `${clientId} 的 user 消息`)
+
+        client.publish(`$client/${clientId}`, `${clientId} 的代理订阅消息`)
+      }, 5000)
+    })
+})
+
+client.on('message', (topic, message) => {
+  console.log(`收到消息 topic: ${topic}, message: ${message.toString()}`)
+})
+```
+
+
 ### 服务启动配置
 
 MongoDB 连接:
