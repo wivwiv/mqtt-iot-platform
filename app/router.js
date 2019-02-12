@@ -15,10 +15,12 @@ module.exports = app => {
   router.put('更改设备', '/devices/:id', controller.home.updateDevice)
   router.delete('删除设备', '/devices/:id', controller.home.deleteDevice)
 
+  router.post('下发消息到设备', '/devices/:id/publish', controller.home.publishToDevice)
+
   router.get('获取 API', '/', controller.home.showApi)
 
   // EMQ X  Auth
-  router.post('EMQ X 认证', '/connect/auth', controller.home.deviceConnectAuth)
+  router.post('EMQ X 连接认证', '/connect/auth', controller.home.deviceConnectAuth)
   // EMQ X Status
   router.post('EMQ X 设备状态', '/connect/status', controller.home.deviceConnectStatus)
 

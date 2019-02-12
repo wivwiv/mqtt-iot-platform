@@ -4,6 +4,7 @@
   "description": "egg.js 开发基于 MQTT 协议的 iot 应用",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "egg": "^2.2.1",
     "egg-mongoose": "^3.1.1",
     "egg-scripts": "^2.5.0",
