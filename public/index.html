@@ -89,7 +89,7 @@ function log(str) {
             {{ clientStatus }}
           </div>
         </span>
-      <input v-model="url" id="url" type="text" placeholder="ws://127.0.0.1:8083/mqtt">
+      <input v-model="url" id="url" type="text" placeholder="ws://hostname:8083/mqtt">
       <div class="device-info">
         <span>名称: {{ device.name }}</span>
         <span style="float: right">状态: {{ device.status === 1 ? '在线' : '离线' }}</span>
@@ -147,10 +147,10 @@ const vm = new Vue({
   el: '#app',
   data() {
     return {
-      url: 'ws://127.0.0.1:8083/mqtt',
+      url: `ws://${location.hostname}:8083/mqtt`,
       device: {},
       devices: [],
-      topic: '/common',
+      topic: '#',
       pubTopic: '/common',
       payload: '{ "cmd": "reboot" }',
       apiList: '',
