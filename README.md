@@ -4,13 +4,18 @@
 
 本项目通过 Egg.js 集成 EMQ X Broker 的插件、API，实现了通信接入、连接认证、状态记录、消息持久化功能，可作为网页即时应用、IM 通信、物联网通信模型。
 
+> 本项目仅做个人学习/工作验证 EMQ X 及 MQTT 功能。
 
-[项目演示 http://118.25.8.117:7001/index.html](http://118.25.8.117:7001/index.html)
+首发博客地址(更多 EMQ X MQTT相关集成方案):
+- 认真挖坑的 W I V： [https://wivwiv.com/](https://wivwiv.com/)
 
-接入地址：
-- MQTT TCP：`mqtt://118.25.8.117:1883`
-- MQTT WebSocket：`ws://118.25.8.117:8083/mqtt`
-- API 列表：`http://118.25.8.117:7001/api/`
+MQTT 体验接入地址：
+- MQTT TCP：`mqtt://broker.emqx.io:1883`
+- MQTT WebSocket：`ws://broker.emqx.io:8083/mqtt`
+- 在线 MQTT Pub/Sub：`http://tools.emqx.io/`
+
+API 列表查看：
+- API 列表：`http://localhost:7001/api/`
 
 ### 功能列表
 
@@ -22,6 +27,7 @@
 - [x] 消息下发 HTTP API
 - [ ] 用户管理
 - [ ] 多用户支持
+- [ ] docker-composes
 
 
 ### MQTT 发布和订阅模型
@@ -173,9 +179,9 @@ module.subscription.1.qos = 0
 
 支持占位符, %c 为设备的 clientId，即每个设备连接成功后将自动订阅 `$client/:clientId` 主
 
-#### 管理监控 API
+#### EMQ X 管理监控 API
 
-http://emqtt.com/docs/v3/rest.html#id22
+https://docs.emqx.io/broker/latest/cn/rest.html
 
 ### 设备接入
 
