@@ -4,19 +4,8 @@
 > 重要通知:
 > Egg.js 后台已经停止开发，请使用基于 Nest.js 框架的后台，[点此查看](../nest-backend/README.md)
 
+
 中文文档 | [English Document](./README.md)
-
-## 使用 Nest.js 开发的全新 IoT Platform 即将到来
-
-[点击查看](./nest-backend/README.zh-CN.md)
-
-- 认证/ACL 管理系统和 API
-- 消息发布 管理系统和 API
-- 设备管理管理系统和 API, 包括封禁、在线状态、代理订阅、踢下线
-- InfluxDB 消息存储于分析同 [EMQ X 与 InfluxDB + Grafana MQTT 物联网数据可视化集成方案](https://wivwiv.com/post/emq-x-%E4%B8%8E-influxdb-grafana-%E7%89%A9%E8%81%94%E7%BD%91%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9B%86%E6%88%90%E6%96%B9%E6%A1%88/#more)
-- QoS 1/QoS 2 Acked 与 Deliver 状态追踪（消息是否抵达）
-- EMQ X 配置生成器，同 [https://nginxconfig.io](https://nginxconfig.io)
-- 集群部署，完全通过 EMQ X Broker 开源版实现
 
 
 使用 Egg.js 借助 EMQ X Broker 消息中间件快速开发基于 MQTT 协议的 IoT 应用服务器，实现 WebSocket、MQTT 等多种协议接入通信。
@@ -83,10 +72,10 @@ sensor/+/temperature
   - 浏览器环境：WebSocket
   - Node.js 环境：MQTT、WebSocket
   - 硬件设备：MQTT、MQTT-SN、CoAP
- 
+
 
 - 消息中间件统一进行认证鉴权：通过 EMQ X HTTP Auth 插件调用认证服务接口进行连接鉴权 
- 
+
 - 系统切换设备在线状态：通过 EMQ X WebHook 插件调用相关接口
 
 - 设备发布消息时消息中间件进行 ACL 鉴权，如：
@@ -95,7 +84,7 @@ sensor/+/temperature
 
 - Broker 将消息转发至相关主题，持久化服务将所有消息持久化至数据库
 
-![](./docs/_assets/topology.png)
+![](../docs/_assets/topology.png)
 
 > 迫于 EMQ X Broker 开源版没有持久化功能，本系统使用 MQTT 客户端在服务器端订阅通配符主题 (#) 将所有消息同步写入数据库(这种方式存在性能与可靠性问题)。
 
@@ -402,7 +391,7 @@ http://127.0.0.1:7001/index.html
 
 - 精确搜索：`?${key}__is=${value}` 
  - http://localhost:7001/api/devices?clientId__is=3457beb0-1e0b-11e9-a946-394b108d0c12
- 
+
 - 模糊搜索：`?${key}__like=${value}`
  - http://localhost:7001/api/devices?clientId__like=3457beb0-1e0b-11e9-a946-394b108d0c12
 

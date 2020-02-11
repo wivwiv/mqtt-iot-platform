@@ -9,7 +9,7 @@ let msgCount = 0
 
 console.log('启动示例，示例 ID：', taskId)
 
-axios.post('/devices', { name: taskId }).then((res) => {
+axios.post('/devices', { name: taskId }).then(res => {
   const { clientId, password, username } = res.data
 
   const client = mqtt.connect('mqtt://127.0.0.1:1883', {

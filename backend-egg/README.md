@@ -2,22 +2,9 @@
 
 > 2020.02.10
 > Important notice:
-> Egg.js backend has stopped development, please use the background based on Nest.js framework, [Click here](./nest-backend/README.md)
-
+> Egg.js backend has stopped development, please use the background based on Nest.js framework, [Click here](../nest-backend/README.md)
 
 [中文文档](./README.zh-CN.md) | English Document
-
-## The IoT Platform in Nest.js is coming.
-
-[Click here](./nest-backend/README.md)
-
-- ACL/Auth Admin WEB and API
-- Message Publish WEB and API
-- Device Management WEB and API, include banned, proxy subscription, online status, kick off
-- Store messages via InfluxDB and analysis like [EMQ X + InfluxDB + Grafana MQTT IoT data visualization](https://wivwiv.com/post/emq-x-%E4%B8%8E-influxdb-grafana-%E7%89%A9%E8%81%94%E7%BD%91%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9B%86%E6%88%90%E6%96%B9%E6%A1%88/#more)
-- QoS 1/QoS 2 Acked and Deliver status track
-- EMQ X config generator like [https://nginxconfig.io](https://nginxconfig.io)
-- Cluster deployment, fully implemented through EMQ x broker open source
 
 
 Use Egg.js with the help of EMQ X Broker message middleware to quickly develop an IoT application server based on the MQTT protocol, and implement multiple protocols such as WebSocket and MQTT access communication.
@@ -96,7 +83,7 @@ Topics are separated by `/`, supporting `+`, `#` wildcards:
 
 - Broker forwards messages to related topics, and the persistence service persists all messages to the database
 
-![](./docs/_assets/topology.png)
+![](../docs/_assets/topology.png)
 
 > The EMQ X Broker open-source version has no persistence function. This system uses the MQTT client to subscribe to the wildcard topic (#) on the server-side to write all messages to the database simultaneously (this method has performance and reliability issues).
 

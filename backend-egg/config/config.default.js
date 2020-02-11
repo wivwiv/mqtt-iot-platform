@@ -8,7 +8,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1548076967409_9292'
 
   // add your config here
-  config.middleware = ['handleError', 'koaQueries']
+  config.middleware = [ 'handleError', 'koaQueries' ]
 
   config.handleError = {
     match: '/api',
