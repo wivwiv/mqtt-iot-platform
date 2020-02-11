@@ -1,5 +1,5 @@
 {
-  "name": "egg-iot-with-mqtt",
+  "name": "mqtt-iot-platform-backend-egg.js",
   "version": "1.0.0",
   "description": "egg.js 开发基于 MQTT 协议的 IoT 应用",
   "private": true,
