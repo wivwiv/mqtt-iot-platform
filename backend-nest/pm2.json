@@ -1,0 +1,17 @@
+{
+  "apps": {
+    "name": "mqtt-iot-platform",
+    "script": "dist/src/main.js",
+    "cwd": "./",
+    "watch": false,
+    "ignore_watch": ["node_modules", "logs"],
+    "exec_mode": "fork",
+    "instances": 1,
+    "error_file": "./logs/app-err.log",
+    "out_file": "./logs/app-out.log",
+    "merge_logs": true,
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+}
