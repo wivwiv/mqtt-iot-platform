@@ -1,47 +1,60 @@
 <template>
   <div class="home">
-    <div class="list-header">
-      <div class="list-header-item">
-        <el-input v-model="option.clientid" placeholder="Client ID"></el-input>
-        <el-button icon="el-icon-search" @click="loadData" type="success">搜索</el-button>
-      </div>
-      <div class="list-header-item">
-        <el-button type="primary" icon="el-icon-plus">添加</el-button>
-      </div>
-    </div>
-     <el-table :data="clients" stripe>
-      <el-table-column
-        prop="date"
-        label="Client ID"
-        min-width="120px">
-      </el-table-column>
+     <crud-card :item="item" :data="clients" :searchFields="searchFields" stripe>
+        <el-table-column
+          prop="date"
+          label="Client ID"
+          min-width="120px">
+        </el-table-column>
 
-      <el-table-column
-        prop="username"
-        label="Username"
-        min-width="80px">
-      </el-table-column>
+        <el-table-column
+          prop="username"
+          label="Username"
+          min-width="80px">
+        </el-table-column>
 
-      <el-table-column
-        prop="onlineState"
-        label="在线状态">
-      </el-table-column>
-
-    </el-table>
+        <el-table-column
+          prop="onlineState"
+          label="在线状态">
+        </el-table-column>
+    </crud-card>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { ISearcnFields } from '@/interface/common.interface';
 import { findAllClient } from '../api/client';
+import CrudCard from '../components/crud/crud-card.vue';
 
 export default Vue.extend({
   name: 'Home',
-  data() {
+  components: {
+    CrudCard,
+  },
+  data(): {
+    searchFields: ISearcnFields;
+    [key: string]: any;
+    } {
     return {
       clients: [],
-      option: {
-        clientid: '',
+      searchFields: [
+        {
+          key: 'clientid',
+          attrs: {
+            placeholder: 'Client ID',
+            clearable: true,
+          },
+        },
+      ],
+      item: {
+        api: findAllClient,
+        getCount(data) {
+          return data.length;
+        },
+        getData(data) {
+          return data;
+        },
       },
     };
   },
@@ -50,33 +63,11 @@ export default Vue.extend({
   },
   methods: {
     loadData() {
-      findAllClient({ _page: 1, _limit: 1000 }).then((resp) => {
-        this.clients = resp.data;
-      });
     },
   },
 });
 </script>
 
 <style lang="scss">
-.list-header {
-  margin: 20px auto;
-  width: 100%;
-  // border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius:  2px;
-  display: flex;
-  &-item {
-    display: flex;
-    align-items: center;
-    max-width: 360px;
-    & + & {
-      margin-left: 20px;
-    }
-    .el-input + .el-button {
-      margin-left: 12px;
-    }
-  }
-}
+
 </style>

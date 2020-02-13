@@ -25,7 +25,7 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-@import "./assets/style/common.scss";
+@import "./assets/style/index.scss";
 
 .el-header {
   padding: 0 !important;

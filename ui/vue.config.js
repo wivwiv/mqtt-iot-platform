@@ -1,4 +1,5 @@
 module.exports = {
+  lintOnSave: false,
   devServer: {
     port: 8080,
     proxy: {
@@ -8,4 +9,5 @@ module.exports = {
       },
     },
   },
+  publicPath: process.env.VUE_APP_PUB_PATH || '/',
 };
